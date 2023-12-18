@@ -1,0 +1,52 @@
+options {
+    STATIC = false; // make parser methods non static
+    DEBUG_PARSER = false;
+    LOOKAHEAD = 1;
+}
+
+PARSER_BEGIN(IntParser)
+
+package com.app.integraljjapi.api;
+
+public class IntParser {
+    /*
+   public static void main(String[] args) throws ParseException {
+       IntParser parser = new IntParser(System.in);
+       EvalVisitor ev= new EvalVisitor();
+       System.out.println(ev.visit(parser.Start()));
+     } */
+}
+PARSER_END(IntParser)
+
+
+SKIP: { " " | "\t" }
+TOKEN :
+{
+	<IDENTIFIER : (["a"-"z"])+ >
+	|<NUMBER : ("-")?(["0"-"9"])+ >
+	|<SEMICOLON: ";" >
+	|<EQUALS: "=" >
+	|<L_PAREN : "(">
+	|<R_PAREN : ")">
+	|<INT : "INT">
+
+}
+
+
+Exp Start() : { Exp e; Exp e2; }
+{
+    e2=Assignment() <SEMICOLON> e=Expression(e2) <SEMICOLON>
+	{ return e; }
+}
+
+Exp Assignment() : { Token t; }
+{
+    <IDENTIFIER> <EQUALS> t=<NUMBER>
+    { return new Num(Integer.parseInt(t.image)); }
+}
+
+Exp Expression(Exp e) : { Exp e1=e; }
+{
+    <INT> <L_PAREN>  <IDENTIFIER>  <R_PAREN>
+	{{ return new INT(e1); }}
+}
