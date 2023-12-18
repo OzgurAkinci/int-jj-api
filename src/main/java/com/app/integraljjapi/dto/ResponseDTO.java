@@ -8,6 +8,8 @@ public class ResponseDTO {
     private PolynomialDTO polynomialDTO;
     private String polynomialFunctionText;
     private String polynomialIntFunctionText;
+    private String[][] symbolicMatrix;
+    private MatrixDTO matrixDTO;
 
     public int getN() {
         return n;
@@ -63,5 +65,21 @@ public class ResponseDTO {
 
     public void setPolynomialIntFunctionText(String polynomialIntFunctionText) {
         this.polynomialIntFunctionText = polynomialIntFunctionText;
+    }
+
+    public String[][] getSymbolicMatrix() {
+        return symbolicMatrix;
+    }
+
+    public void setSymbolicMatrix(String[][] symbolicMatrix) {
+        this.symbolicMatrix = symbolicMatrix;
+    }
+
+    public MatrixDTO getMatrixDTO() {
+        return matrixDTO;
+    }
+
+    public void setMatrixDTO(MatrixDTO matrixDTO) {
+        this.matrixDTO = matrixDTO;
     }
 }

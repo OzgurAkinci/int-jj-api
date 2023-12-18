@@ -15,7 +15,7 @@
 
             <div class="col-12 h-100">
                 <div class="form-group">
-                    <label class="control-label">Input => n=8;INT(n);</label>
+                    <label class="control-label">Input => n=2;INT(n);</label>
                     <input type="text" class="form-control" id="v"/>
                 </div>
                 <div class="form-group">
@@ -25,7 +25,11 @@
 
             <div class="col-md-12">
                 <div class="alert alert-info" role="alert">
-                    <pre id="result">&nbsp;</pre>
+                    <pre id="resultSolutionMatrix">&nbsp;</pre>
+                </div>
+
+                <div class="alert alert-info" role="alert">
+                    <pre id="resultAllData">&nbsp;</pre>
                 </div>
             </div>
         </div>
@@ -50,7 +54,8 @@
                 cache: false,
                 timeout: 600000,
                 success: function (data) {
-                    $('#result').html(JSON.stringify(data, null, 4));
+                    $('#resultSolutionMatrix').html(JSON.stringify(data.matrixDTO.solutionMatrix, null, 4));
+                    $('#resultAllData').html(JSON.stringify(data, null, 4));
                 },
                 error: function (e) {
                     $('#result').html(JSON.parse(e.responseText).message);

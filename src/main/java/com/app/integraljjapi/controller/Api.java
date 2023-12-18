@@ -2,10 +2,7 @@ package com.app.integraljjapi.controller;
 
 import com.app.integraljjapi.api.EvalVisitor;
 import com.app.integraljjapi.api.IntParser;
-import com.app.integraljjapi.dto.PointerDTO;
-import com.app.integraljjapi.dto.PolynomialDTO;
-import com.app.integraljjapi.dto.RequestDTO;
-import com.app.integraljjapi.dto.ResponseDTO;
+import com.app.integraljjapi.dto.*;
 import com.app.integraljjapi.util.AppUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -54,6 +51,18 @@ public class Api {
             var polynomialFunction = polynomialDTO.getPoly();
             var polynomialIntFunction = polynomialDTO.getPolyInt();
 
+            // symbolic matrix
+            var symbolicMatrix = AppUtils.initSymbolicMatrix(pointers, n);
+
+            // init matrix
+            var initMatrix = AppUtils.initMatrix(pointers, n);
+
+            // matrix
+            var matrix = new MatrixDTO();
+            String[] B = new String[pointers.length];
+            for(int i=0; i<pointers.length; i++) {B[i] = pointers[i].getyCoefficient();}
+            matrix = AppUtils.findEchelonMatrix(initMatrix, B);
+
             responseDTO.setN(n);
             responseDTO.setPointers(pointers);
             responseDTO.sethPointersText(hPointers);
@@ -61,6 +70,8 @@ public class Api {
             responseDTO.setPolynomialDTO(polynomialDTO);
             responseDTO.setPolynomialFunctionText(polynomialFunction);
             responseDTO.setPolynomialIntFunctionText(polynomialIntFunction);
+            responseDTO.setSymbolicMatrix(symbolicMatrix);
+            responseDTO.setMatrixDTO(matrix);
 
             return responseDTO;
         }catch (Exception e) {
