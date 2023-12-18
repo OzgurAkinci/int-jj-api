@@ -24,12 +24,19 @@
             </div>
 
             <div class="col-md-12">
-                <div class="alert alert-info" role="alert">
+                <div class="alert alert-success" role="alert">
+                    Solution Matrix
                     <pre id="resultSolutionMatrix">&nbsp;</pre>
                 </div>
 
                 <div class="alert alert-info" role="alert">
+                    Response
                     <pre id="resultAllData">&nbsp;</pre>
+                </div>
+
+                <div class="alert alert-danger" role="alert">
+                    Error
+                    <pre id="error">&nbsp;</pre>
                 </div>
             </div>
         </div>
@@ -58,7 +65,7 @@
                     $('#resultAllData').html(JSON.stringify(data, null, 4));
                 },
                 error: function (e) {
-                    $('#result').html(JSON.parse(e.responseText).message);
+                    $('#error').html(JSON.parse(e.responseText).message);
                 }
             });
         });
