@@ -2,13 +2,18 @@ package com.app.integraljjapi.controller;
 
 import com.app.integraljjapi.api.EvalVisitor;
 import com.app.integraljjapi.api.IntParser;
+import com.app.integraljjapi.dto.PointerDTO;
 import com.app.integraljjapi.dto.RequestDTO;
+import com.app.integraljjapi.dto.ResponseDTO;
+import com.app.integraljjapi.util.AppUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.ByteArrayInputStream;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 @Controller
 public class Api {
@@ -22,21 +27,34 @@ public class Api {
 
     @PostMapping(value = "/actions/postForm")
     public ResponseEntity<?> saveForm(@RequestBody RequestDTO requestDTO) throws Exception {
-        int n = getNValue(requestDTO.getV());
+        ResponseDTO responseDTO = getNValue(requestDTO.getV());
 
-        return ResponseEntity.ok(n);
+        return ResponseEntity.ok(responseDTO);
     }
 
-    private int getNValue(String v) throws Exception {
+    private ResponseDTO getNValue(String v) throws Exception {
         try {
+            ResponseDTO responseDTO = new ResponseDTO();
             //File file = ResourceUtils.getFile("classpath:input.txt");
             //InputStream in = new FileInputStream(file);
 
             IntParser intParser = new IntParser(new ByteArrayInputStream(v.getBytes()));
             EvalVisitor ev = new EvalVisitor();
             Object obj = ev.visit(intParser.Start());
+            int n = Integer.parseInt(obj.toString());
 
-            return Integer.parseInt(obj.toString());
+
+            var pointers = AppUtils.calcPointers(n+1);
+            var hPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::gethCoefficient).collect(Collectors.joining(","));
+            var yPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::getyCoefficient).collect(Collectors.joining(","));
+
+
+            responseDTO.setN(n);
+            responseDTO.setPointers(pointers);
+            responseDTO.sethPointersText(hPointers);
+            responseDTO.setyPointersText(yPointers);
+
+            return responseDTO;
         }catch (Exception e) {
             throw new Exception("Hatalı giriş yapıldı. Lütfen tekrar deneyin.");
         }

@@ -1,7 +1,6 @@
 package com.app.integraljjapi.util;
 
 import com.app.integraljjapi.dto.*;
-import com.app.integraljjapi.util.FractionUtils;
 
 import java.util.*;
 
@@ -16,7 +15,7 @@ public final class AppUtils {
     public static final String PolynomialIntFunction = "P(x)";
 
     //Functions
-    static PointerDTO[] calcPointers (int n) {
+    public static PointerDTO[] calcPointers(int n) {
         int mod = n % 2; // If n is even or odd
 
         int leftCounter = ((mod == 0) ? (((n/2)-1) * -1) : ((n/2) * -1));
