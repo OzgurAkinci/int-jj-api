@@ -3,6 +3,7 @@ package com.app.integraljjapi.controller;
 import com.app.integraljjapi.api.EvalVisitor;
 import com.app.integraljjapi.api.IntParser;
 import com.app.integraljjapi.dto.PointerDTO;
+import com.app.integraljjapi.dto.PolynomialDTO;
 import com.app.integraljjapi.dto.RequestDTO;
 import com.app.integraljjapi.dto.ResponseDTO;
 import com.app.integraljjapi.util.AppUtils;
@@ -43,16 +44,23 @@ public class Api {
             Object obj = ev.visit(intParser.Start());
             int n = Integer.parseInt(obj.toString());
 
-
+            // pointers
             var pointers = AppUtils.calcPointers(n+1);
             var hPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::gethCoefficient).collect(Collectors.joining(","));
             var yPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::getyCoefficient).collect(Collectors.joining(","));
 
+            // polynomial functions
+            var polynomialDTO = AppUtils.getPolynomialDto(n);
+            var polynomialFunction = polynomialDTO.getPoly();
+            var polynomialIntFunction = polynomialDTO.getPolyInt();
 
             responseDTO.setN(n);
             responseDTO.setPointers(pointers);
             responseDTO.sethPointersText(hPointers);
             responseDTO.setyPointersText(yPointers);
+            responseDTO.setPolynomialDTO(polynomialDTO);
+            responseDTO.setPolynomialFunctionText(polynomialFunction);
+            responseDTO.setPolynomialIntFunctionText(polynomialIntFunction);
 
             return responseDTO;
         }catch (Exception e) {

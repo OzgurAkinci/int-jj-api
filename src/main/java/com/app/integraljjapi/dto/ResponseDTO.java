@@ -5,6 +5,9 @@ public class ResponseDTO {
     private PointerDTO[] pointers;
     private String hPointersText;
     private String yPointersText;
+    private PolynomialDTO polynomialDTO;
+    private String polynomialFunctionText;
+    private String polynomialIntFunctionText;
 
     public int getN() {
         return n;
@@ -36,5 +39,29 @@ public class ResponseDTO {
 
     public void setyPointersText(String yPointersText) {
         this.yPointersText = yPointersText;
+    }
+
+    public PolynomialDTO getPolynomialDTO() {
+        return polynomialDTO;
+    }
+
+    public void setPolynomialDTO(PolynomialDTO polynomialDTO) {
+        this.polynomialDTO = polynomialDTO;
+    }
+
+    public String getPolynomialFunctionText() {
+        return polynomialFunctionText;
+    }
+
+    public void setPolynomialFunctionText(String polynomialFunctionText) {
+        this.polynomialFunctionText = polynomialFunctionText;
+    }
+
+    public String getPolynomialIntFunctionText() {
+        return polynomialIntFunctionText;
+    }
+
+    public void setPolynomialIntFunctionText(String polynomialIntFunctionText) {
+        this.polynomialIntFunctionText = polynomialIntFunctionText;
     }
 }

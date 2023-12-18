@@ -37,7 +37,7 @@ public final class AppUtils {
         return arr;
     }
 
-    static PolynomialDTO getPolynomialDto(int n) {
+    public static PolynomialDTO getPolynomialDto(int n) {
         StringBuilder poly = new StringBuilder();
         List<FractionUtils> coefficients = new ArrayList<>();
 
