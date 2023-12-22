@@ -49,7 +49,8 @@ public class Api {
 
             // pointers
             var pointers = AppUtils.calcPointers(n+1);
-            var hPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::gethCoefficient).collect(Collectors.joining(","));
+            var hPointersText = Arrays.stream(pointers).toList().stream().map(PointerDTO::gethCoefficient).collect(Collectors.joining(","));
+            var hPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::gethCoefficient).toList();
             var yPointers = Arrays.stream(pointers).toList().stream().map(PointerDTO::getyCoefficient).collect(Collectors.joining(","));
 
             // polynomial functions
@@ -71,7 +72,8 @@ public class Api {
 
             responseDTO.setN(n);
             responseDTO.setPointers(pointers);
-            responseDTO.sethPointersText(hPointers);
+            responseDTO.sethPointersText(hPointersText);
+            responseDTO.sethPointers(hPointers);
             responseDTO.setyPointersText(yPointers);
             responseDTO.setPolynomialDTO(polynomialDTO);
             responseDTO.setPolynomialFunctionText(polynomialFunction);

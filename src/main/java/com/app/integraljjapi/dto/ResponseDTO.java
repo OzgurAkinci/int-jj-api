@@ -1,8 +1,11 @@
 package com.app.integraljjapi.dto;
 
+import java.util.List;
+
 public class ResponseDTO {
     private int n;
     private PointerDTO[] pointers;
+    private List<String> hPointers;
     private String hPointersText;
     private String yPointersText;
     private PolynomialDTO polynomialDTO;
@@ -81,5 +84,13 @@ public class ResponseDTO {
 
     public void setMatrixDTO(MatrixDTO matrixDTO) {
         this.matrixDTO = matrixDTO;
+    }
+
+    public List<String> gethPointers() {
+        return hPointers;
+    }
+
+    public void sethPointers(List<String> hPointers) {
+        this.hPointers = hPointers;
     }
 }
