@@ -30,6 +30,12 @@ public class Api {
         return ResponseEntity.ok(responseDTO);
     }
 
+    @RequestMapping("/latex")
+    public ModelAndView test(ModelAndView mv) {
+        mv.setViewName("latex");
+        return mv;
+    }
+
     private ResponseDTO getNValue(String v) throws Exception {
         try {
             ResponseDTO responseDTO = new ResponseDTO();

@@ -3,74 +3,107 @@
 <head>
     <meta charset="ISO-8859-1">
     <title>Int JJ API</title>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <link th:href="@{/styles/style.css}" rel="stylesheet"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
 </head>
-<body>
-<div class="container my-2">
-    <div class="h-100">
+<body class="bg-light">
+<div class="container-fluid p-0">
+    <!-- NAVBAR -->
+    <div class="row" id="flipkart-navbar">
+        <div class="container">
+            <div class="row">
+                <div class="pull-left">
+                    <h4><span class="smallnav menu" onclick="openNav()">? Int JJ Api</span></h4>
+                    <h3><span class="largenav">Integral JJ API</span></h3>
+                </div>
+                <ul class="largenav pull-right">
+                    <li class="upper-links"><a class="links" href="#">Home</a></li>
+                    <li class="upper-links"><a class="links" href="#">Api Documentation</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="mySidenav" class="sidenav">
+            <div class="container" style="background-color: #2874f0; padding-top: 10px;">
+                <span class="sidenav-heading">Home</span>
+                <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">×</a>
+            </div>
+            <a href="#">Home</a>
+            <a href="#">Api Documentation</a>
+        </div>
+    </div>
+    <!-- NAVBAR -->
+
+    <!-- INPUT -->
+    <div class="container">
+        <br/>
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-10 col-lg-8">
+                <form class="card card-sm">
+                    <div class="card-body row no-gutters align-items-center">
+                        <div class="col-auto">
+                            <i class="fas fa-search h4 text-body"></i>
+                        </div>
+                        <!--end of col-->
+                        <div class="col">
+                            <input class="form-control form-control-lg form-control-borderless" id="v"
+                                   value="n=2;INT(n);" type="search" placeholder="">
+                        </div>
+                        <!--end of col-->
+                        <div class="col-auto">
+                            <button id="btn" class="btn btn-lg btn-search" type="submit">Calculate</button>
+                        </div>
+                        <!--end of col-->
+                    </div>
+                </form>
+            </div>
+            <!--end of col-->
+        </div>
+    </div>
+    <!-- INPUT -->
+
+    <!-- RESULT -->
+    <div class="container mt-5">
         <div class="row">
-            <div class="col-12 text-center">
-                <h3>Integral JJ API</h3></div>
-            </div>
-
-            <div class="col-12 h-100">
-                <div class="form-group">
-                    <label class="control-label">Input => n=2;INT(n);</label>
-                    <input type="text" class="form-control" id="v"/>
+            <div class="card-columns">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Solution Matrix</h5>
+                        <p class="card-text"><pre id="resultSolutionMatrix">&nbsp;</pre><pre id="error">&nbsp;</pre></p>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <button type="submit" id="btn" class="btn btn-primary btn-lg btn-block">Send</button>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">h pointers</h5>
+                        <p class="card-text hPointersText"></p>
+                    </div>
                 </div>
-            </div>
-
-            <div class="col-md-12">
-                <div class="alert alert-success" role="alert">
-                    Solution Matrix
-                    <pre id="resultSolutionMatrix">&nbsp;</pre>
-                </div>
-
-                <div class="alert alert-info" role="alert">
-                    Response
-                    <pre id="resultAllData">&nbsp;</pre>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Symbolic Matrix</h5>
+                        <p class="card-text symbolicMatrixTable"></p>
+                    </div>
                 </div>
 
-                <div class="alert alert-danger" role="alert">
-                    Error
-                    <pre id="error">&nbsp;</pre>
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Symbolic Matrix</h5>
+                        <p class="card-text"><pre id="resultAllData">&nbsp;</pre></p>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+    <!-- RESULT -->
+
+
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function () {
-        $("#btn").click(function (event) {
-            event.preventDefault();
-            let vd = document.getElementById("v");
-            let formDataV = {
-                'v': vd.value
-            };
-            $.ajax({
-                type: "POST",
-                contentType: "application/json",
-                url: "/actions/postForm",
-                data: JSON.stringify(formDataV),
-                dataType: 'json',
-                cache: false,
-                timeout: 600000,
-                success: function (data) {
-                    $('#resultSolutionMatrix').html(JSON.stringify(data.matrixDTO.solutionMatrix, null, 4));
-                    $('#resultAllData').html(JSON.stringify(data, null, 4));
-                },
-                error: function (e) {
-                    $('#error').html(JSON.parse(e.responseText).message);
-                }
-            });
-        });
-    });
-    /*]]>*/
-</script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.min.js"></script>
+<script type="text/javascript" th:src="@{/js/app.js}"></script>
+<script type="text/javascript" th:src="@{/js/api.js}"></script>
 </body>
 </html>
