@@ -82,13 +82,33 @@ public final class AppUtils {
             for(int j=0; j<=n; j++) {
                 PointerDTO pointer = pointers[i];
                 int coefficient = pointer.getCoefficient();
-                String element = (coefficient == 0 && j == 0) ? ("c{" + pointers[i].getCoefficient() + "}") : h(coefficient, tempN);
+                //String element = (coefficient == 0 && j == 0) ? ("c{" + pointers[i].getCoefficient() + "}") : h(coefficient, tempN);
+                //String element = (coefficient == 0 && j == 0) ? "0" : h(coefficient, tempN);
+                String element = h(coefficient, tempN);
                 matrix[i][j] = element;
                 tempN--;
             }
             matrix[i][n+1] = "y" + "{" + pointers[i].getCoefficient() + "}";
         }
         return matrix;
+    }
+
+    public static String h(int coefficientInt, int pow) {
+        boolean powIsEvenNumber = (pow % 2) == 0;
+        coefficientInt = (powIsEvenNumber && coefficientInt < 0) ? (coefficientInt * -1): coefficientInt;
+
+        if(coefficientInt == 0 && pow == 0) {
+            return "1";
+        }
+        else if(coefficientInt == 0) {
+            return "0";
+        }else if(pow == 0) {
+            return "1";
+        }else if(pow == 1 || pow == -1) {
+            return symMultiply(coefficientInt, pow);
+        } else {
+            return symMultiply((int)Math.pow(coefficientInt, pow), pow) + "^" + pow;
+        }
     }
 
     public static int[][] initMatrix (PointerDTO[] pointers, int n) {
@@ -104,21 +124,6 @@ public final class AppUtils {
             }
         }
         return arr;
-    }
-
-    public static String h(int coefficientInt, int pow) {
-        boolean powIsEvenNumber = (pow % 2) == 0;
-        coefficientInt = (powIsEvenNumber && coefficientInt < 0) ? (coefficientInt * -1): coefficientInt;
-
-        if(coefficientInt == 0) {
-            return "0";
-        }else if(pow == 0) {
-            return "1";
-        }else if(pow == 1 || pow == -1) {
-            return symMultiply(coefficientInt, pow);
-        } else {
-            return symMultiply((int)Math.pow(coefficientInt, pow), pow) + "^" + pow;
-        }
     }
 
     public static String symMultiply(int num, int pow) {
