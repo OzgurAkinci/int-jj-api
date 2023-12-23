@@ -25,6 +25,7 @@ $(document).ready(function() {
                 setText('<b>h -></b> ' + data.hPointersText + '<br/>' + '<b>y -></b> ' + data.yPointersText, 'hyPointersText');
                 setXToHText(data, 'xToHText');
                 createSymbolicMatrixTable(data.symbolicMatrix, 'symbolicMatrixTable');
+                createSymbolicMatrixTable(data.matrixDTO.initMatrix, 'initMatrixTable');
                 //createMatrixTableGlobal(data.symbolicMatrix, 'symbolicMatrixTable');
                 $(".results").show();
             },
