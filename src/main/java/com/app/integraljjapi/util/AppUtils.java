@@ -198,6 +198,8 @@ public final class AppUtils {
             }
             //printMatrix(A);
             stepDto.setMatrix(A);
+            stepDto.setProcess("R" + col + " <- " + "R" + row + "/" + pivot);
+            stepDto.setPivot(pivot);
 
             // Beşinci adım: bir sonraki anahtar eleman için ilerleyin
             row++;
