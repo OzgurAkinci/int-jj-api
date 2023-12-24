@@ -28,6 +28,7 @@ $(document).ready(function() {
                 createMatrixTable(data.matrixDTO.initMatrix, 'initMatrixTable');
                 createMatrixTable(data.matrixDTO.echelonMatrix, 'echelonMatrixTable');
                 createEchelonStepsMatrixTable(data.matrixDTO.steps, 'echelonStepsMatrixTable');
+                setRowOperations(data.matrixDTO.steps,'rowOperations');
                 $(".results").show();
             },
             error: function(e) {
@@ -40,6 +41,15 @@ $(document).ready(function() {
     });
 });
 
+function setRowOperations(steps, className) {
+    let div = document.createElement('div');
+    for(let s=0; s<steps.length; s++) {
+        let p = document.createElement('p');
+        p.append(steps[s].process);
+        div.append(p);
+    }
+    $('.' + className).html(div);
+}
 
 function setText(text, className) {
     $('.' + className).html(text);
