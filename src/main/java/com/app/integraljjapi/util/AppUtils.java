@@ -1,5 +1,6 @@
 package com.app.integraljjapi.util;
 
+import ch.qos.logback.core.joran.sanity.Pair;
 import com.app.integraljjapi.dto.*;
 
 import java.util.*;
@@ -9,6 +10,8 @@ public final class AppUtils {
     private AppUtils() {
         // No need to instantiate the class, we can hide its constructor
     }
+
+    private static Map<Integer, List<Map.Entry<String, String>>> numericOperation = new HashMap<>();
 
     //Functions
     public static PointerDTO[] calcPointers(int n) {
@@ -142,6 +145,8 @@ public final class AppUtils {
     */
     public static MatrixDTO findEchelonMatrix(int[][] A, String[] B) {
         MatrixDTO matrixDto = new MatrixDTO();
+        for (int i = 0; i<A.length; i++)
+            numericOperation.put(i, new ArrayList<>());
 
         int[][] initMatrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
         matrixDto.setInitMatrix(initMatrix);
@@ -156,7 +161,7 @@ public final class AppUtils {
 
             // Gereksiz swap işlemlerinden kaçın
             if (pivot != maxRow) {
-                swapRows(A, pivot, maxRow);
+                swapRows(A, pivot, maxRow, B);
                 var operation = "R" + (pivot+1) + " <-> R" + (maxRow+1);
 
                 int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
@@ -165,13 +170,14 @@ public final class AppUtils {
                 swapStepDto.setPivotRow(pivot);
                 swapStepDto.setMatrix(matrix);
                 swapStepDto.setProcess(operation);
+                swapStepDto.setSolution(B.clone());
                 stepDtoList.add(swapStepDto);
             }
 
             // Pivot satırını normalize et
             int pivotValue = A[pivot][pivot];
             if (pivotValue != 0 && pivotValue != 1) { // Gereksiz işlemleri önle
-                multiplyRow(A, pivot, 1.0 / pivotValue);
+                multiplyRow(A, pivot, 1.0 / pivotValue, B);
                 var operation = "R" + (pivot+1) + " <- R" + (pivot+1) + " * " + (1.0 / pivotValue);
 
                 int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
@@ -180,6 +186,7 @@ public final class AppUtils {
                 normalizationStepDto.setPivotRow(pivot);
                 normalizationStepDto.setMatrix(matrix);
                 normalizationStepDto.setProcess(operation);
+                normalizationStepDto.setSolution(B.clone());
                 stepDtoList.add(normalizationStepDto);
             }
 
@@ -187,7 +194,7 @@ public final class AppUtils {
             for (int row = 0; row < rowCount; row++) {
                 if (row != pivot && A[row][pivot] != 0) {
                     int multiplier = -A[row][pivot];
-                    addRows(A, row, pivot, multiplier);
+                    addRows(A, row, pivot, multiplier, B);
                     var operation = "R" + (row+1) + " <- R" + (row+1) + " + R" + (pivot+1) + " * " + multiplier;
 
                     int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
@@ -196,6 +203,7 @@ public final class AppUtils {
                     clearPivotStepDto.setPivotRow(pivot);
                     clearPivotStepDto.setMatrix(matrix);
                     clearPivotStepDto.setProcess(operation);
+                    clearPivotStepDto.setSolution(B.clone());
                     stepDtoList.add(clearPivotStepDto);
                 }
             }
@@ -218,21 +226,36 @@ public final class AppUtils {
         return maxRow;
     }
 
-    private static void swapRows(int[][] matrix, int row1, int row2) {
+    private static void swapRows(int[][] matrix, int row1, int row2, String[] B) {
         int[] temp = matrix[row1];
         matrix[row1] = matrix[row2];
         matrix[row2] = temp;
+
+        String temp2 = B[row1];
+        B[row1] = B[row2];
+        B[row2] = temp2;
+
+        List<Map.Entry<String, String>> tmp =  numericOperation.get(row1);
+        numericOperation.put(row1,numericOperation.get(row2));
+        numericOperation.put(row2,tmp);
+
     }
 
-    private static void multiplyRow(int[][] matrix, int row, double scalar) {
+    private static void multiplyRow(int[][] matrix, int row, double scalar, String[] B) {
         for (int i = 0; i < matrix[row].length; i++) {
             matrix[row][i] *= scalar;
         }
+        boolean p = B[row].length()>5? true : false;
+        B[row] = (p?"(":"") + B[row] + (p?")":"")+" * " + scalar;
     }
 
-    private static void addRows(int[][] matrix, int targetRow, int sourceRow, int multiplier) {
+    private static void addRows(int[][] matrix, int targetRow, int sourceRow, int multiplier, String[] B) {
         for (int i = 0; i < matrix[0].length; i++) {
             matrix[targetRow][i] += multiplier * matrix[sourceRow][i];
         }
+
+        boolean p = B[targetRow].length()>5? true : false;
+        boolean p2 = B[sourceRow].length()>5? true : false;
+        B[targetRow] = (p?"(":"") + B[targetRow] + (p?")":"")+(multiplier>0?" + ":(multiplier<0?" - ":"")) + (multiplier>1 || multiplier<-1 ? multiplier : "") + (p2?"(":"") + B[sourceRow] + (p2?")":"");
     }
 }

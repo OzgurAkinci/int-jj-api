@@ -2,6 +2,7 @@ package com.app.integraljjapi.dto;
 
 public class StepDTO {
     private int[][] matrix;
+    private String[] solution;
     private int pivotRow;
     private int pivot;
     private String process;
@@ -38,6 +39,14 @@ public class StepDTO {
 
     public void setPivot(int pivot) {
         this.pivot = pivot;
+    }
+
+    public String[] getSolution() {
+        return solution;
+    }
+
+    public void setSolution(String[] solution) {
+        this.solution = solution;
     }
 
     @Override
