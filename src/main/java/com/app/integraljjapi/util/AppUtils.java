@@ -10,10 +10,6 @@ public final class AppUtils {
         // No need to instantiate the class, we can hide its constructor
     }
 
-    // Variables
-    public static final String PolynomialFunction = "p(x)";
-    public static final String PolynomialIntFunction = "P(x)";
-
     //Functions
     public static PointerDTO[] calcPointers(int n) {
         int mod = n % 2; // If n is even or odd
@@ -153,86 +149,90 @@ public final class AppUtils {
         int rowCount = A.length;
         int columnCount = A[0].length;
 
-        List<StepDTO> stepDtoList = new ArrayList<>();
+        var stepDtoList = new ArrayList<StepDTO>();
+        for (int pivot = 0; pivot < rowCount; pivot++) {
+            // Bulunan pivot sütununu ve satırını bul
+            int maxRow = findPivotRow(A, pivot);
 
+            // Gereksiz swap işlemlerinden kaçın
+            if (pivot != maxRow) {
+                swapRows(A, pivot, maxRow);
+                var operation = "R" + (pivot+1) + " <-> R" + (maxRow+1);
 
-        int row = 0;
-        for (int col = 0; col < columnCount && row < rowCount; col++) {
-            StepDTO stepDto = new StepDTO();
+                int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
 
-            // Birinci adım: anahtar elemanın 0 olmadığı bir satır bulun
-            int pivotRow = row;
-            while (pivotRow < rowCount && A[pivotRow][col] == 0) {
-                pivotRow++;
-            }
-            //System.out.println("pivotRow:" + pivotRow);
-            stepDto.setPivotRow(pivotRow);
-
-            //printMatrix(A);
-            stepDto.setMatrix(A);
-
-            if (pivotRow == rowCount) {
-                // Bu sütundaki tüm elemanlar zaten sıfır
-                continue;
+                StepDTO swapStepDto = new StepDTO();
+                swapStepDto.setPivotRow(pivot);
+                swapStepDto.setMatrix(matrix);
+                swapStepDto.setProcess(operation);
+                stepDtoList.add(swapStepDto);
             }
 
-            // İkinci adım: anahtar elemanı olan satırı bulun ve eşleştirin
-            if (pivotRow != row) {
-                int[] tempRow = A[pivotRow];
-                A[pivotRow] = A[row];
-                A[row] = tempRow;
+            // Pivot satırını normalize et
+            int pivotValue = A[pivot][pivot];
+            if (pivotValue != 0 && pivotValue != 1) { // Gereksiz işlemleri önle
+                multiplyRow(A, pivot, 1.0 / pivotValue);
+                var operation = "R" + (pivot+1) + " <- R" + (pivot+1) + " * " + (1.0 / pivotValue);
+
+                int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
+
+                StepDTO normalizationStepDto = new StepDTO();
+                normalizationStepDto.setPivotRow(pivot);
+                normalizationStepDto.setMatrix(matrix);
+                normalizationStepDto.setProcess(operation);
+                stepDtoList.add(normalizationStepDto);
             }
 
-            // Üçüncü adım: anahtar elemanı sıfırdan farklı bir sayı yapın
-            int pivot = A[row][col];
-            for (int j = col; j < columnCount; j++) {
-                A[row][j] /= pivot;
-            }
+            // Pivot sütununu sıfırla
+            for (int row = 0; row < rowCount; row++) {
+                if (row != pivot && A[row][pivot] != 0) {
+                    int multiplier = -A[row][pivot];
+                    addRows(A, row, pivot, multiplier);
+                    var operation = "R" + (row+1) + " <- R" + (row+1) + " + R" + (pivot+1) + " * " + multiplier;
 
-            B[row] = B[row] + "/" + pivot;
+                    int[][] matrix = Arrays.stream(A).map(int[]::clone).toArray(int[][]::new);
 
-            //System.out.println("*****************************");
-
-            // Dördüncü adım: anahtar elemanın altındaki tüm elemanlarda sıfır yapın
-            for (int j = row + 1; j < rowCount; j++) {
-                int factor = A[j][col];
-                for (int k = col; k < columnCount; k++) {
-                    A[j][k] -= factor * A[row][k];
+                    StepDTO clearPivotStepDto = new StepDTO();
+                    clearPivotStepDto.setPivotRow(pivot);
+                    clearPivotStepDto.setMatrix(matrix);
+                    clearPivotStepDto.setProcess(operation);
+                    stepDtoList.add(clearPivotStepDto);
                 }
-                B[j] = B[j] + "-" +  factor + "*" + B[row];
             }
-            //printMatrix(A);
-            stepDto.setMatrix(A);
-            stepDto.setProcess("R" + col + " <- " + "R" + row + "/" + pivot);
-            stepDto.setPivot(pivot);
-
-            // Beşinci adım: bir sonraki anahtar eleman için ilerleyin
-            row++;
-
-            stepDtoList.add(stepDto);
         }
 
         matrixDto.setSteps(stepDtoList);
         matrixDto.setEchelonMatrix(A);
         matrixDto.setSolutionMatrix(B);
+
         return matrixDto;
     }
 
-    public static void printMatrix(int[][] matrix) {
-        for (int[] ints : matrix) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(ints[j] + " ");
+    private static int findPivotRow(int[][] matrix, int pivot) {
+        int maxRow = pivot;
+        for (int row = pivot + 1; row < matrix.length; row++) {
+            if (Math.abs(matrix[row][pivot]) > Math.abs(matrix[maxRow][pivot])) {
+                maxRow = row;
             }
-            System.out.println();
+        }
+        return maxRow;
+    }
+
+    private static void swapRows(int[][] matrix, int row1, int row2) {
+        int[] temp = matrix[row1];
+        matrix[row1] = matrix[row2];
+        matrix[row2] = temp;
+    }
+
+    private static void multiplyRow(int[][] matrix, int row, double scalar) {
+        for (int i = 0; i < matrix[row].length; i++) {
+            matrix[row][i] *= scalar;
         }
     }
 
-    public static void printStrMatrix(String[][] matrix) {
-        for (String[] ints : matrix) {
-            for (int j = 0; j < matrix[0].length; j++) {
-                System.out.print(ints[j] + " ");
-            }
-            System.out.println();
+    private static void addRows(int[][] matrix, int targetRow, int sourceRow, int multiplier) {
+        for (int i = 0; i < matrix[0].length; i++) {
+            matrix[targetRow][i] += multiplier * matrix[sourceRow][i];
         }
     }
 }
