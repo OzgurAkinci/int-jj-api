@@ -1,6 +1,6 @@
 $(document).ready(function() {
     $(".results").hide();
-
+    $('.errorDiv').hide();
     $("#btn").click(function(event) {
         event.preventDefault();
         let vd = document.getElementById("v");
@@ -16,10 +16,8 @@ $(document).ready(function() {
             cache: false,
             timeout: 600000,
             success: function(data) {
-                $('#error').html("");
+                $('.results').show();
                 $('#resultSolutionMatrix').html(JSON.stringify(data.matrixDTO.solutionMatrix, null, 2));
-                //$('#resultAllData').html(JSON.stringify(data, null, 2));
-
                 setText('<b>p(x)=</b> ' + data.polynomialDTO.poly + '<br/>' + '<b>P(x)=</b> ' + data.polynomialDTO.polyInt, 'nPolyText');
                 setText(data.polynomialDTO.polyInt, 'nPolyIntText');
                 setText('<b>h -></b> ' + data.hPointersText + '<br/>' + '<b>y -></b> ' + data.yPointersText, 'hyPointersText');
@@ -29,13 +27,13 @@ $(document).ready(function() {
                 createMatrixTable(data.matrixDTO.echelonMatrix, 'echelonMatrixTable');
                 createEchelonStepsMatrixTable(data.matrixDTO.steps, 'echelonStepsMatrixTable');
                 setRowOperations(data.matrixDTO.steps,'rowOperations');
-                $(".results").show();
+                $(".errorDiv").hide();
             },
             error: function(e) {
-                $('#error').html(JSON.parse(e.responseText).message);
                 $('#resultSolutionMatrix').html("");
-                $('#resultAllData').html("");
-                $(".results").show();
+                $('.results').hide();
+                $('.errorDiv').html(JSON.parse(e.responseText).message);
+                $(".errorDiv").show();
             }
         });
     });
@@ -79,6 +77,8 @@ function createEchelonStepsMatrixTable(steps, className) {
                 let cell = row.insertCell(j);
                 cell.innerHTML = rowData[j];
             }
+            //let cell = row.insertCell(rowData.length);
+            //cell.innerHTML = steps[s].solution[i];
         }
         tables.append("PivotRow= " + steps[s].pivotRow + ", Pivot: " + steps[s].pivot + ", (" + steps[s].process + ")");
         tables.append(table);
