@@ -4,12 +4,20 @@ import com.app.integraljjapi.api.EvalVisitor;
 import com.app.integraljjapi.api.IntParser;
 import com.app.integraljjapi.dto.*;
 import com.app.integraljjapi.util.AppUtils;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
@@ -30,10 +38,23 @@ public class Api {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @RequestMapping("/latex")
-    public ModelAndView test(ModelAndView mv) {
-        mv.setViewName("latex");
-        return mv;
+    @PostMapping(value ="/actions/createLatexPdf")
+    public void test(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws IOException {
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "attachment; filename=latex.pdf");
+        try {
+            Document document = new Document();
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            PdfWriter.getInstance(document, baos);
+            document.open();
+            document.add(new Paragraph("Merhaba, PDF'iniz burada!"));
+            document.close();
+
+            response.getOutputStream().write(baos.toByteArray());
+            response.flushBuffer();
+        } catch (DocumentException e) {
+            throw new IOException(e.getMessage());
+        }
     }
 
     private ResponseDTO getNValue(String v) throws Exception {

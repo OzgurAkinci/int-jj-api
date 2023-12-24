@@ -37,7 +37,40 @@ $(document).ready(function() {
             }
         });
     });
+
+
 });
+
+function createLatexPdf() {
+    let vd = document.getElementById("v");
+    let formDataV = {
+        'v': vd.value
+    };
+
+    $.ajax({
+        url: '/actions/createLatexPdf',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify(formDataV),
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(blob) {
+            let downloadUrl = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'latex.pdf';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+        },
+        error: function(xhr, status, error) {
+            console.error("Dosya indirilirken bir hata oluştu:", error);
+        }
+    });
+}
+
 
 function setRowOperations(steps, className) {
     let div = document.createElement('div');
