@@ -17,6 +17,8 @@ $ java Main < input.txt
 
 #### 4. Matrisi Satır Basamak Formuna Dönüştürme Algoritması
 ```
+https://www.math.purdue.edu/~shao92/documents/Algorithm%20REF.pdf
+
 Adım 1. m × n matrisi A ile başlayın. Eğer A = 0 ise, Adım 7'ye geçin. 
 Adım 2. En sola yerleşmiş sıfır olmayan bir sütunu belirleyin. 
 Adım 3. Bu sütunun en üst pozisyonuna (bu pozisyonu pivot pozisyon olarak adlandırıyoruz) bir yerine getirmek için elementer satır işlemlerini kullanın. 
