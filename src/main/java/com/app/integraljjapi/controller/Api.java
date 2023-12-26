@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Controller
@@ -57,25 +58,26 @@ public class Api {
 
         try{
             //https://miktex.org/download
-            ProcessBuilder builder = new ProcessBuilder("pdflatex", absolutePath);
+            ProcessBuilder builder = new ProcessBuilder("pdflateX", absolutePath);
             builder.directory(new File(tempFilePath));
             builder.redirectErrorStream(true);
             Process process = builder.start();
-            process.waitFor();
+            process.waitFor(5, TimeUnit.SECONDS);
 
             //pdflatex ile generate edilen pdf dosyası indiriliyor.
-            Path fileStorageLocation = Paths.get(tempFilePath + "/" + temp.getName().replace(".tex", ".pdf")).toAbsolutePath().normalize();
-            Resource resource = new UrlResource(fileStorageLocation.toUri());
+            Path path = Paths.get(tempFilePath + "/" + temp.getName().replace(".tex", ".pdf"));
+            if(FileUtils.isFileExist(path)) {
+                Path fileStorageLocation = path.toAbsolutePath().normalize();
+                Resource resource = new UrlResource(fileStorageLocation.toUri());
 
-            response.setContentType("application/pdf");
-            response.setHeader("Content-Disposition", "attachment; filename="+fileName+".pdf");
-            response.getOutputStream().write(resource.getContentAsByteArray());
-            response.flushBuffer();
-
+                response.setContentType("application/pdf");
+                response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".pdf");
+                response.getOutputStream().write(resource.getContentAsByteArray());
+                response.flushBuffer();
+            }
         }catch (IOException ex) {
             ex.printStackTrace();
         }
-
     }
 
     @PostMapping(value ="/actions/downloadLatexFile")

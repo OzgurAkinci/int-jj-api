@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Base64;
 
@@ -27,5 +28,9 @@ public class FileUtils {
         tempFile.delete();
 
         return encodedContent;
+    }
+
+    public static Boolean isFileExist(Path path) {
+        return path != null && Files.exists(path);
     }
 }
