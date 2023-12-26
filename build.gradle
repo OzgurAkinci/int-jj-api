@@ -13,7 +13,11 @@ java {
 
 repositories {
 	mavenCentral()
+	maven {
+		url "https://repository.aspose.com/repo/"
+	}
 }
+
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'

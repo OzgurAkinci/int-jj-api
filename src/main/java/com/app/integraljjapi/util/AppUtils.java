@@ -38,7 +38,7 @@ public final class AppUtils {
 
     public static PolynomialDTO getPolynomialDto(int n) {
         StringBuilder poly = new StringBuilder();
-        List<FractionUtils> coefficients = new ArrayList<>();
+        var coefficients = new ArrayList<FractionUtils>();
 
         StringBuilder polyInt = new StringBuilder();
         for (int i = n ; i >= 0; i--) {
@@ -81,8 +81,6 @@ public final class AppUtils {
             for(int j=0; j<=n; j++) {
                 PointerDTO pointer = pointers[i];
                 int coefficient = pointer.getCoefficient();
-                //String element = (coefficient == 0 && j == 0) ? ("c{" + pointers[i].getCoefficient() + "}") : h(coefficient, tempN);
-                //String element = (coefficient == 0 && j == 0) ? "0" : h(coefficient, tempN);
                 String element = h(coefficient, tempN);
                 matrix[i][j] = element;
                 tempN--;

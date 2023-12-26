@@ -41,14 +41,44 @@ $(document).ready(function() {
 
 });
 
-function createLatexPdf() {
+function createLatexFile() {
     let vd = document.getElementById("v");
     let formDataV = {
         'v': vd.value
     };
 
     $.ajax({
-        url: '/actions/createLatexPdf',
+        url: '/actions/downloadLatexFile',
+        type: 'POST',
+        contentType: "application/json",
+        data: JSON.stringify(formDataV),
+        xhrFields: {
+            responseType: 'blob'
+        },
+        success: function(blob) {
+            let downloadUrl = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = downloadUrl;
+            a.download = 'latex.tex';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(downloadUrl);
+        },
+        error: function(xhr, status, error) {
+            console.error("Dosya indirilirken bir hata oluştu:", error);
+        }
+    });
+}
+
+function downloadPdfFile() {
+    let vd = document.getElementById("v");
+    let formDataV = {
+        'v': vd.value
+    };
+
+    $.ajax({
+        url: '/actions/downloadPdfFile',
         type: 'POST',
         contentType: "application/json",
         data: JSON.stringify(formDataV),
@@ -70,7 +100,6 @@ function createLatexPdf() {
         }
     });
 }
-
 
 function setRowOperations(steps, className) {
     let div = document.createElement('div');

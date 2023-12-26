@@ -4,21 +4,22 @@ import com.app.integraljjapi.api.EvalVisitor;
 import com.app.integraljjapi.api.IntParser;
 import com.app.integraljjapi.dto.*;
 import com.app.integraljjapi.util.AppUtils;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
+import com.app.integraljjapi.util.FileUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import java.io.File;
+import java.io.*;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.stream.Collectors;
 
 @Controller
@@ -38,23 +39,51 @@ public class Api {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping(value ="/actions/createLatexPdf")
-    public void test(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws IOException {
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "attachment; filename=latex.pdf");
-        try {
-            Document document = new Document();
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            PdfWriter.getInstance(document, baos);
-            document.open();
-            document.add(new Paragraph("Merhaba, PDF'iniz burada!"));
-            document.close();
+    @PostMapping(value ="/actions/downloadPdfFile")
+    public void downloadPdfFile(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws Exception {
+        String latexContent = "\\documentclass{article}\n\\begin{document}\nHello, world!\n\\end{document}";
 
-            response.getOutputStream().write(baos.toByteArray());
-            response.flushBuffer();
-        } catch (DocumentException e) {
-            throw new IOException(e.getMessage());
+        String fileName = "latex";
+        File temp = File.createTempFile(fileName, ".tex");
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(temp))) {
+            bw.write(latexContent);
         }
+
+        String absolutePath = temp.getAbsolutePath();
+        String tempFilePath = absolutePath
+                .substring(0, absolutePath.lastIndexOf(File.separator));
+
+        try{
+            //https://miktex.org/download
+            ProcessBuilder builder = new ProcessBuilder("pdflatex", absolutePath);
+            builder.directory(new File(tempFilePath));
+            builder.redirectErrorStream(true);
+            Process process = builder.start();
+
+            //pdflatex ile generate edilen pdf dosyası indiriliyor.
+            Path fileStorageLocation = Paths.get(tempFilePath + "/" + temp.getName().replace(".tex", ".pdf")).toAbsolutePath().normalize();
+            Resource resource = new UrlResource(fileStorageLocation.toUri());
+
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "attachment; filename="+fileName+".pdf");
+            response.getOutputStream().write(resource.getContentAsByteArray());
+            response.flushBuffer();
+
+        }catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    @PostMapping(value ="/actions/downloadLatexFile")
+    public void downloadLatexFile(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws IOException {
+        String latexContent = "\\documentclass{article}\n\\begin{document}\nHello, world!\n\\end{document}";
+        String base64String = FileUtils.createTexFileAndConvertToBase64(latexContent);
+
+        response.setContentType("text/x-tex");
+        response.setHeader("Content-Disposition", "attachment; filename=latex.tex");
+        response.getOutputStream().write(Base64.getDecoder().decode(base64String));
+        response.flushBuffer();
     }
 
     private ResponseDTO getNValue(String v) throws Exception {
