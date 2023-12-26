@@ -24,13 +24,13 @@ public final class AppUtils {
 
         int i=0;
         while (leftCounter < 0) {
-            arr[i] = new PointerDTO(leftCounter, leftCounter == -1 ? "-h" : (leftCounter + "h"), "y{" + leftCounter + "}");
+            arr[i] = new PointerDTO(leftCounter, leftCounter == -1 ? "-h" : (leftCounter + "h"), "y_{" + leftCounter + "}");
             leftCounter++; i++;
         }
 
         i = n-1;
         while (rightCounter >= 0) {
-            arr[i] = new PointerDTO(rightCounter, rightCounter == 1 ? "h" : (rightCounter == 0 ? "0" : (rightCounter + "h")), "y{" + rightCounter + "}");
+            arr[i] = new PointerDTO(rightCounter, rightCounter == 1 ? "h" : (rightCounter == 0 ? "0" : (rightCounter + "h")), "y_{" + rightCounter + "}");
             rightCounter--; i--;
         }
         return arr;
