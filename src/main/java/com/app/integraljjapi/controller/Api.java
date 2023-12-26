@@ -5,6 +5,7 @@ import com.app.integraljjapi.api.IntParser;
 import com.app.integraljjapi.dto.*;
 import com.app.integraljjapi.util.AppUtils;
 import com.app.integraljjapi.util.FileUtils;
+import com.app.integraljjapi.util.LatexUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.io.Resource;
@@ -41,7 +42,8 @@ public class Api {
 
     @PostMapping(value ="/actions/downloadPdfFile")
     public void downloadPdfFile(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws Exception {
-        String latexContent = "\\documentclass{article}\n\\begin{document}\nHello, world!\n\\end{document}";
+        var responseDTO = getNValue(requestDTO.getV());
+        var latexContent = LatexUtils.createLatexFromData(responseDTO);
 
         String fileName = "latex";
         File temp = File.createTempFile(fileName, ".tex");
@@ -59,6 +61,7 @@ public class Api {
             builder.directory(new File(tempFilePath));
             builder.redirectErrorStream(true);
             Process process = builder.start();
+            process.waitFor();
 
             //pdflatex ile generate edilen pdf dosyası indiriliyor.
             Path fileStorageLocation = Paths.get(tempFilePath + "/" + temp.getName().replace(".tex", ".pdf")).toAbsolutePath().normalize();
@@ -76,8 +79,9 @@ public class Api {
     }
 
     @PostMapping(value ="/actions/downloadLatexFile")
-    public void downloadLatexFile(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws IOException {
-        String latexContent = "\\documentclass{article}\n\\begin{document}\nHello, world!\n\\end{document}";
+    public void downloadLatexFile(HttpServletRequest request, HttpServletResponse response, @RequestBody RequestDTO requestDTO) throws Exception {
+        var responseDTO = getNValue(requestDTO.getV());
+        var latexContent = LatexUtils.createLatexFromData(responseDTO);
         String base64String = FileUtils.createTexFileAndConvertToBase64(latexContent);
 
         response.setContentType("text/x-tex");
@@ -89,8 +93,6 @@ public class Api {
     private ResponseDTO getNValue(String v) throws Exception {
         try {
             ResponseDTO responseDTO = new ResponseDTO();
-            //File file = ResourceUtils.getFile("classpath:input.txt");
-            //InputStream in = new FileInputStream(file);
 
             IntParser intParser = new IntParser(new ByteArrayInputStream(v.getBytes()));
             EvalVisitor ev = new EvalVisitor();
