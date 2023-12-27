@@ -19,28 +19,6 @@
 $f(x) = paramFx$\\
 paramFX$
 
-\section{Merkeze taşınmış koordinat düzlemi}
-\begin{center}
-\begin{tikzpicture}
-    % Koordinat eksenlerini çiz
-    \draw[line width=1mm,->] (-3,0) -- (3,0) node[right] {$x$}; % x eksen
-    \draw[line width=1mm,->] (0,-3) -- (0,3) node[above] {$y$}; % y eksen
-
-    % x eksenindeki noktalar
-    \draw[fill=black] (-2,0) circle (0.1) node[below] {$-h$};
-    \draw[fill=black] (0,0) circle (0.1) node[below] {$0$};
-    \draw[fill=black] (2,0) circle (0.1) node[below] {$h$};
-
-    % y eksenindeki noktalar
-    \draw[fill=black] (-2,1) circle (0.1) node[left] {$y_0$};
-    \draw[fill=black] (0,2) circle (0.1) node[left] {$y_1$};
-    \draw[fill=black] (2,3) circle (0.1) node[left] {$y_2$};
-
-    % Parabolü çiz
-    \draw[domain=-2:2, smooth, variable=\x, blue, thick] plot ({\x}, {\x*\x + 2});
-\end{tikzpicture}
-\end{center}
-
 \section{Koordinat düzlemi üzerinde yer alacak h ve y değerleri belirlenir.}
 $h = paramH$\\
 $y = paramY$
