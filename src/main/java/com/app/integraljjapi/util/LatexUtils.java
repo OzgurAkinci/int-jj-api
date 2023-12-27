@@ -15,20 +15,24 @@ public class LatexUtils {
 
     public LatexUtils() {}
 
-    public static String createLatexFromData(ResponseDTO response) throws IOException {
+    public static String createLatexFromData(ResponseDTO response) throws Exception {
         var latex = getResourceFileAsString();
-        latex = latex.replace("paramN", String.valueOf(response.getN()));
-        latex = latex.replace("paramFx", response.getPolynomialFunctionText());
-        latex = latex.replace("paramFX", getPolyIntLatex(response.getPolynomialDTO().getPolyIntLatex(), response.gethPointers()));
-        latex = latex.replace("paramH", response.gethPointersText());
-        latex = latex.replace("paramY", response.getyPointersText());
-        latex = latex.replace("paramXToH", getXToHLatex(response));
-        latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
-        latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
-        latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
-        latex = latex.replace("paramEquationRootValues", getEquationRootValues(response.getMatrixDTO().getSolutionMatrix()));
-        latex = latex.replace("paramResult", getResultLatex(response.getMatrixDTO().getSolutionMatrix(), response.getN(), response.gethPointers()));
-        return latex;
+        if(latex != null) {
+            latex = latex.replace("paramN", String.valueOf(response.getN()));
+            latex = latex.replace("paramFx", response.getPolynomialFunctionText());
+            latex = latex.replace("paramFX", getPolyIntLatex(response.getPolynomialDTO().getPolyIntLatex(), response.gethPointers()));
+            latex = latex.replace("paramH", response.gethPointersText());
+            latex = latex.replace("paramY", response.getyPointersText());
+            latex = latex.replace("paramXToH", getXToHLatex(response));
+            latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
+            latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
+            latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
+            latex = latex.replace("paramEquationRootValues", getEquationRootValues(response.getMatrixDTO().getSolutionMatrix()));
+            latex = latex.replace("paramResult", getResultLatex(response.getMatrixDTO().getSolutionMatrix(), response.getN(), response.gethPointers()));
+            return latex;
+        }else {
+            throw new Exception("init.tex file crashed.");
+        }
     }
 
     static String getResourceFileAsString() throws IOException {

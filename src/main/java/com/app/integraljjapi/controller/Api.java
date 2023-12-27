@@ -27,6 +27,12 @@ import java.util.stream.Collectors;
 @Controller
 public class Api {
 
+    @RequestMapping("/api")
+    public ModelAndView api(ModelAndView mv) {
+        mv.setViewName("api");
+        return mv;
+    }
+
     @RequestMapping("/")
     public ModelAndView home(ModelAndView mv) {
         mv.addObject("param1", new RequestDTO());
