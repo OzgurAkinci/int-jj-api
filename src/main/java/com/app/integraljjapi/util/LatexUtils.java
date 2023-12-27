@@ -83,7 +83,7 @@ public class LatexUtils {
         var response = new StringBuilder();
         int stepIndex = 0;
         for(StepDTO stepDTO: matrixDTO.getSteps()) {
-            response.append("$PivotRow= "+matrixDTO.getSteps().get(stepIndex).getPivotRow()+", Pivot: "+matrixDTO.getSteps().get(stepIndex).getPivot()+", (R3 \\leftarrow R3 + R1 * -1) $\\\\");
+            response.append("$PivotRow= "+matrixDTO.getSteps().get(stepIndex).getPivotRow()+", Pivot: "+matrixDTO.getSteps().get(stepIndex).getPivot()+", ("+matrixDTO.getSteps().get(stepIndex).getProcess().replace("<->", "\\leftrightarrow").replace("<-", "\\leftarrow")+") $\\\\");
             response.append("$\\begin{bmatrix}");
             var index = 0;
             for (int[] matrix : stepDTO.getMatrix()) {
