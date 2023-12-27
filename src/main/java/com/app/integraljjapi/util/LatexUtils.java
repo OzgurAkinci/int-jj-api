@@ -25,6 +25,7 @@ public class LatexUtils {
         latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
         latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
         latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
+        latex = latex.replace("paramEquationRootValues", getEquationRootValues(response.getMatrixDTO().getSolutionMatrix()));
         return latex;
     }
 
@@ -100,6 +101,14 @@ public class LatexUtils {
             stepIndex++;
         }
 
+        return response.toString();
+    }
+
+    private static CharSequence getEquationRootValues(String[] solutionMatrix) {
+        var response = new StringBuilder();
+        for(var i=0; i<solutionMatrix.length; i++) {
+            response.append("$c{").append(i).append("}").append(" = ").append(solutionMatrix[i]).append("$\\\\").append("\n");
+        }
         return response.toString();
     }
 
