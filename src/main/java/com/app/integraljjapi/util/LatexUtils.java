@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.List;
 import java.util.stream.Collectors;
 
 public class LatexUtils {
@@ -18,7 +19,7 @@ public class LatexUtils {
         var latex = getResourceFileAsString();
         latex = latex.replace("paramN", String.valueOf(response.getN()));
         latex = latex.replace("paramFx", response.getPolynomialFunctionText());
-        latex = latex.replace("paramFX", response.getPolynomialDTO().getPolyIntLatex());
+        latex = latex.replace("paramFX", getPolyIntLatex(response.getPolynomialDTO().getPolyIntLatex(), response.gethPointers()));
         latex = latex.replace("paramH", response.gethPointersText());
         latex = latex.replace("paramY", response.getyPointersText());
         latex = latex.replace("paramXToH", getXToHLatex(response));
@@ -26,7 +27,7 @@ public class LatexUtils {
         latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
         latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
         latex = latex.replace("paramEquationRootValues", getEquationRootValues(response.getMatrixDTO().getSolutionMatrix()));
-        latex = latex.replace("paramResult", getResultLatex(response.getMatrixDTO().getSolutionMatrix(), response.getN()));
+        latex = latex.replace("paramResult", getResultLatex(response.getMatrixDTO().getSolutionMatrix(), response.getN(), response.gethPointers()));
         return latex;
     }
 
@@ -38,6 +39,12 @@ public class LatexUtils {
                     return reader.lines().collect(Collectors.joining(System.lineSeparator()));
             }
         }
+    }
+
+    static String getPolyIntLatex(String polyIntLatex, List<String> hPointers) {
+        var response = new StringBuilder();
+        response.append("$\\int_{").append(hPointers.get(0)).append("}^{").append(hPointers.get(hPointers.size() - 1)).append("}x\\,dx = ").append(polyIntLatex);
+        return response.toString();
     }
 
     static String getXToHLatex(ResponseDTO input) {
@@ -113,16 +120,14 @@ public class LatexUtils {
         return response.toString();
     }
 
-    private static String getResultLatex(String[] solutionMatrix, int n) {
+    private static String getResultLatex(String[] solutionMatrix, int n, List<String> hPointers) {
         var response = new StringBuilder();
-        response.append("$\\int_{-h}^{h}x\\,dx = ");
+        response.append("$\\int_{").append(hPointers.get(0)).append("}^{").append(hPointers.get(hPointers.size() - 1)).append("}x\\,dx = ");
         for(int i=n; i>=0; i--) {
             if(i==0) {
                 response.append("(").append(solutionMatrix[i]).append(")").append("x");
-            }else if(i==1){
-                response.append("\\frac{").append("(").append(solutionMatrix[i]).append(")").append("x").append("}").append("{").append(i).append("}").append(" + ");
             }else {
-                response.append("\\frac{").append("(").append(solutionMatrix[i]).append(")").append("x^").append(i).append("}").append("{").append(i).append("}").append(" + ");
+                response.append("\\frac{").append("(").append(solutionMatrix[i]).append(")").append("x^").append(i+1).append("}").append("{").append(i+1).append("}").append(" + ");
             }
         }
         response.append("$");
