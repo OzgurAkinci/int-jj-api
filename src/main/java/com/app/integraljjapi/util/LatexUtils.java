@@ -96,7 +96,7 @@ public class LatexUtils {
                 response.append(rowText).append("\\\\");
                 index++;
             }
-            response.append(" \\end{bmatrix} $").append("\\\\");
+            response.append(" \\end{bmatrix} \\break $").append("\\\\").append("\n");
             stepIndex++;
         }
 
