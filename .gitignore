@@ -3,7 +3,9 @@ build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/
-
+src/main/resources/*.aux
+src/main/resources/*.pdf
+src/main/resources/*.gz
 ### STS ###
 .apt_generated
 .classpath
