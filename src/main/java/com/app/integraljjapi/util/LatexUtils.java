@@ -20,6 +20,7 @@ public class LatexUtils {
         latex = latex.replace("paramH", response.gethPointersText());
         latex = latex.replace("paramY", response.getyPointersText());
         latex = latex.replace("paramXToH", getXToHLatex(response));
+        latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
         return latex;
     }
 
@@ -33,15 +34,32 @@ public class LatexUtils {
         }
     }
 
-    static String getXToHLatex(ResponseDTO response) {
-        var xToHText = new StringBuilder();
-        for(var i=0; i<response.gethPointers().size(); i++) {
-            var pointer = '('+response.gethPointers().get(i)+')';
-            xToHText.append("$x \\leftrightarrow ").append(response.gethPointers().get(i))
-                    .append(" \\longrightarrow ").append(response.getPolynomialFunctionText()
+    static String getXToHLatex(ResponseDTO input) {
+        var response = new StringBuilder();
+        for(var i=0; i<input.gethPointers().size(); i++) {
+            var pointer = '('+input.gethPointers().get(i)+')';
+            response.append("$x \\leftrightarrow ").append(input.gethPointers().get(i))
+                    .append(" \\longrightarrow ").append(input.getPolynomialFunctionText()
                             .replaceAll("x", pointer)).append("$\\\\").append("\n");
         }
-        return xToHText.toString();
+        return response.toString();
+    }
+
+    static String getSymbolicMatrixLatex(String[][] symbolicMatrix) {
+        var response = new StringBuilder();
+
+        for (String[] matrix : symbolicMatrix) {
+            StringBuilder rowText = new StringBuilder();
+            for (var j = 0; j < matrix.length; j++) {
+                rowText.append(matrix[j]);
+                if (j < matrix.length - 1) {
+                    rowText.append("&");
+                }
+            }
+            response.append(rowText).append("\\\\");
+        }
+
+        return response.toString();
     }
 
 }
