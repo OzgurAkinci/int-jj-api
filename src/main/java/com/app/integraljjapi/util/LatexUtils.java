@@ -26,6 +26,7 @@ public class LatexUtils {
         latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
         latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
         latex = latex.replace("paramEquationRootValues", getEquationRootValues(response.getMatrixDTO().getSolutionMatrix()));
+        latex = latex.replace("paramResult", getResultLatex(response.getMatrixDTO().getSolutionMatrix(), response.getN()));
         return latex;
     }
 
@@ -104,7 +105,7 @@ public class LatexUtils {
         return response.toString();
     }
 
-    private static CharSequence getEquationRootValues(String[] solutionMatrix) {
+    private static String getEquationRootValues(String[] solutionMatrix) {
         var response = new StringBuilder();
         for(var i=0; i<solutionMatrix.length; i++) {
             response.append("$c{").append(i).append("}").append(" = ").append(solutionMatrix[i]).append("$\\\\").append("\n");
@@ -112,4 +113,22 @@ public class LatexUtils {
         return response.toString();
     }
 
+    private static String getResultLatex(String[] solutionMatrix, int n) {
+        var response = new StringBuilder();
+        response.append("$\\int_{-h}^{h}x\\,dx = ");
+        for(int i=n; i>=0; i--) {
+            if(i==0) {
+                response.append("(").append(solutionMatrix[i]).append(")").append("x");
+            }else if(i==1){
+                response.append("\\frac{").append("(").append(solutionMatrix[i]).append(")").append("x").append("}").append("{").append(i).append("}").append(" + ");
+            }else {
+                response.append("\\frac{").append("(").append(solutionMatrix[i]).append(")").append("x^").append(i).append("}").append("{").append(i).append("}").append(" + ");
+            }
+        }
+        response.append("$");
+
+        return response.toString();
+    }
+
 }
+
