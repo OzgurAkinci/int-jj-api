@@ -41,6 +41,9 @@ public final class AppUtils {
         var coefficients = new ArrayList<FractionUtils>();
 
         StringBuilder polyInt = new StringBuilder();
+
+        StringBuilder polyIntLatex = new StringBuilder();
+
         for (int i = n ; i >= 0; i--) {
             // p(x) = cnx^n + ... + c3x^3 + c2x^2 + c1x + c0
             poly.append("c_").append("{").append(i).append("}");
@@ -65,11 +68,25 @@ public final class AppUtils {
                 polyInt.append(" + ");
             }
 
+            // polyIntLatex
+            if( i == 0) {
+                polyIntLatex.append("c_").append("{").append(i).append("}");
+                polyIntLatex.append("x");
+            }else {
+                polyIntLatex.append("\\frac{").append("c_").append("{").append(i).append("}");
+                polyIntLatex.append("x^").append(i+1);
+                polyIntLatex.append("}");
+            }
+            if(i != 0) {
+                polyIntLatex.append("{").append(i+1).append("}");
+                polyIntLatex.append(" + ");
+            }
+
             FractionUtils f = i == 0 ? FractionUtils.ZERO : FractionUtils.getInstance(1, i);
             coefficients.add(f);
         }
 
-        return new PolynomialDTO(poly.toString(), polyInt.toString());
+        return new PolynomialDTO(poly.toString(), polyInt.toString(), polyIntLatex.toString());
     }
 
 

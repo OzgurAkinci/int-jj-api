@@ -14,6 +14,12 @@ public class LatexUtils {
 
     public static String createLatexFromData(ResponseDTO response) throws IOException {
         var latex = getResourceFileAsString();
+        latex = latex.replace("paramN", String.valueOf(response.getN()));
+        latex = latex.replace("paramFx", response.getPolynomialFunctionText());
+        //latex = latex.replace("paramFX", "(\\frac{c_{2}x^3}{3}) + (\\frac{c_{1}x^2}{2}) + ((c_{0})x)");
+        latex = latex.replace("paramFX", response.getPolynomialDTO().getPolyIntLatex());
+        latex = latex.replace("paramH", "-h,0,h");
+        latex = latex.replace("paramY", "y_{-1},y_{0},y_{1}");
         return latex;
     }
 
