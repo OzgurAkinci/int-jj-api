@@ -21,6 +21,7 @@ public class LatexUtils {
         latex = latex.replace("paramY", response.getyPointersText());
         latex = latex.replace("paramXToH", getXToHLatex(response));
         latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
+        latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
         return latex;
     }
 
@@ -47,7 +48,6 @@ public class LatexUtils {
 
     static String getSymbolicMatrixLatex(String[][] symbolicMatrix) {
         var response = new StringBuilder();
-
         for (String[] matrix : symbolicMatrix) {
             StringBuilder rowText = new StringBuilder();
             for (var j = 0; j < matrix.length; j++) {
@@ -58,7 +58,21 @@ public class LatexUtils {
             }
             response.append(rowText).append("\\\\");
         }
+        return response.toString();
+    }
 
+    static String getInitialMatrixLatex(int[][] initialMatrix) {
+        var response = new StringBuilder();
+        for (int[] matrix : initialMatrix) {
+            StringBuilder rowText = new StringBuilder();
+            for (var j = 0; j < matrix.length; j++) {
+                rowText.append(matrix[j]);
+                if (j < matrix.length - 1) {
+                    rowText.append("&");
+                }
+            }
+            response.append(rowText).append("\\\\");
+        }
         return response.toString();
     }
 
