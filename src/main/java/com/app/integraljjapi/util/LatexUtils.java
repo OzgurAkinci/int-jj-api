@@ -1,6 +1,8 @@
 package com.app.integraljjapi.util;
 
+import com.app.integraljjapi.dto.MatrixDTO;
 import com.app.integraljjapi.dto.ResponseDTO;
+import com.app.integraljjapi.dto.StepDTO;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +24,7 @@ public class LatexUtils {
         latex = latex.replace("paramXToH", getXToHLatex(response));
         latex = latex.replace("prmSymbolicMatrix", getSymbolicMatrixLatex(response.getSymbolicMatrix()));
         latex = latex.replace("prmInitialMatrix", getInitialMatrixLatex(response.getMatrixDTO().getInitMatrix()));
+        latex = latex.replace("prmStepByStep", getStepByStepEchelonMatrixLatex(response.getMatrixDTO()));
         return latex;
     }
 
@@ -73,6 +76,30 @@ public class LatexUtils {
             }
             response.append(rowText).append("\\\\");
         }
+        return response.toString();
+    }
+
+    static String getStepByStepEchelonMatrixLatex(MatrixDTO matrixDTO) {
+        var response = new StringBuilder();
+        int stepIndex = 0;
+        for(StepDTO stepDTO: matrixDTO.getSteps()) {
+            response.append("$PivotRow= "+matrixDTO.getSteps().get(stepIndex).getPivotRow()+", Pivot: "+matrixDTO.getSteps().get(stepIndex).getPivot()+", (R3 \\leftarrow R3 + R1 * -1) $\\\\");
+            response.append("$\\begin{bmatrix}");
+            var index = 0;
+            for (int[] matrix : stepDTO.getMatrix()) {
+                StringBuilder rowText = new StringBuilder();
+                for (var j = 0; j < matrix.length; j++) {
+                    rowText.append(matrix[j]);
+                    rowText.append("&");
+                }
+                rowText.append(stepDTO.getSolution()[index]);
+                response.append(rowText).append("\\\\");
+                index++;
+            }
+            response.append(" \\end{bmatrix} $").append("\\\\");
+            stepIndex++;
+        }
+
         return response.toString();
     }
 
