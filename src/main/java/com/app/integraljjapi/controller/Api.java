@@ -60,6 +60,7 @@ public class Api {
             //https://miktex.org/download
             ProcessBuilder builder = new ProcessBuilder("pdflateX", absolutePath);
             builder.directory(new File(tempFilePath));
+            builder.redirectOutput(ProcessBuilder.Redirect.INHERIT);
             builder.redirectErrorStream(true);
             Process process = builder.start();
             process.waitFor(5, TimeUnit.SECONDS);
@@ -74,6 +75,8 @@ public class Api {
                 response.setHeader("Content-Disposition", "attachment; filename=" + fileName + ".pdf");
                 response.getOutputStream().write(resource.getContentAsByteArray());
                 response.flushBuffer();
+            }else {
+                throw new Exception("Getting error while creating pdf file.");
             }
         }catch (IOException ex) {
             ex.printStackTrace();
