@@ -58,7 +58,7 @@ public class Api {
             bw.write(latexContent);
         }
 
-        String absolutePath = temp.getAbsolutePath();
+        String absolutePath = temp.getAbsolutePath().replace("ADMINI~1", "Administrator");
         String tempFilePath = absolutePath
                 .substring(0, absolutePath.lastIndexOf(File.separator));
 
